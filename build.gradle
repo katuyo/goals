@@ -1,0 +1,35 @@
+plugins {
+    id("java")
+}
+
+allprojects {
+
+    group = "org.featx.templet"
+    version = "1.0.0-SNAPSHOT"
+    java.sourceCompatibility = JavaVersion.VERSION_14
+    java.targetCompatibility = JavaVersion.VERSION_14
+
+    repositories {
+        mavenCentral()
+        maven { url = uri("https://repo.spring.io/milestone")}
+//        maven { url "https://artifacts.elastic.co/maven" }
+        maven {
+            url = uri("https://repo.rdc.aliyun.com/repository/67417-release-5dYQ7a/")
+            credentials {
+                username = "${MVN_USERNAME}"
+                password = "${MVN_PASSWORD}"
+            }
+        }
+        maven {
+            url = uri("https://repo.rdc.aliyun.com/repository/67417-snapshot-6tKIEl/")
+            credentials {
+                username = "${MVN_USERNAME}"
+                password = "${MVN_PASSWORD}"
+            }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

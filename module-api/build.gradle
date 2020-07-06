@@ -1,0 +1,54 @@
+plugins {
+    id("java")
+    id("maven-publish")
+}
+
+dependencies {
+    compileOnly("com.google.guava:guava:${guavaVersion}")
+    compileOnly("com.alibaba:fastjson:${fastJsonVersion}")
+    compileOnly("org.slf4j:slf4j-api:${slf4jVersion}")
+    compileOnly("io.projectreactor:reactor-core:${reactorVersion}")
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    compileOnly("org.springframework:spring-web:${springVersion}")
+    compileOnly("io.github.openfeign:feign-hystrix:10.7.0")
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+
+    compile("org.featx.spec:spec:${featxSpecVersion}")
+}
+
+task sourceJar(type: Jar, dependsOn: "classes") {
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: "javadoc") {
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "src"
+            }
+
+            artifact javadocJar {
+                classifier "doc"
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = "https://repo.rdc.aliyun.com/repository/67417-release-5dYQ7a/"
+            if (project.version.endsWith("SNAPSHOT")) {
+                url = "https://repo.rdc.aliyun.com/repository/67417-snapshot-6tKIEl/"
+            }
+            credentials {
+                username "${MVN_USERNAME}"
+                password "${MVN_PASSWORD}"
+            }
+        }
+    }
+}

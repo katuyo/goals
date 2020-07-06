@@ -1,0 +1,123 @@
+server:
+  port: 8002
+spring:
+  cloud:
+    sentinel:
+      datasource:
+        ds:
+          nacos:
+            dataId: ${spring.application.name}-sentinel
+            groupId: DEFAULT_GROUP
+            rule-type: flow
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 20
+logging:
+  config: classpath:logback-spring.xml
+
+---
+spring:
+  profiles: develop
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+      datasource:
+        ds:
+          nacos:
+            server-addr: 127.0.0.1:8848
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/webbox?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true
+    username: root
+    password: wgl12wgl
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: mq-test
+    send-message-timeout: 300000
+    compress-message-body-threshold: 4096
+    max-message-size: 4194304
+    retry-times-when-send-async-failed: 0
+    retry-next-server: true
+    retry-times-when-send-failed: 2
+---
+spring:
+  profiles: test
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+      datasource:
+        ds:
+          nacos:
+            server-addr: 127.0.0.1:8848
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/webbox?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true
+    username: root
+    password: wgl12wgl
+
+---
+spring:
+  profiles: uat
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+      datasource:
+        ds:
+          nacos:
+            server-addr: 127.0.0.1:8848
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/webbox?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true
+    username: root
+    password: wgl12wgl
+
+---
+spring:
+  profiles: prod
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+      datasource:
+        ds:
+          nacos:
+            server-addr: 127.0.0.1:8848
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/webbox?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true
+    username: root
+    password: wgl12wgl
