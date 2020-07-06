@@ -1,9 +1,9 @@
-package com.juext.shop.base.storage.service;
+package com.juext.asset.goals.storage.service;
 
 import org.featx.spec.model.PageRequest;
 import org.featx.spec.model.QuerySection;
-import com.juext.shop.base.storage.entity.AccountEntity;
-import com.juext.shop.base.storage.query.AccountCriteria;
+import com.juext.asset.goals.storage.entity.AccountEntity;
+import com.juext.asset.goals.storage.query.AccountCriteria;
 
 import java.util.List;
 

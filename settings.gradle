@@ -1,4 +1,4 @@
-rootProject.name = "spring-cloud-alibaba"
+rootProject.name = "goals"
 include("module-api")
 include("module-business")
 include("module-storage")

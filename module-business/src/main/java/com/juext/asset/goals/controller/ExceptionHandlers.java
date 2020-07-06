@@ -1,4 +1,4 @@
-package com.juext.shop.base.controller;
+package com.juext.asset.goals.controller;
 
 import org.featx.spec.error.BaseExceptionHandler;
 import org.featx.spec.error.BusinessException;

@@ -1,11 +1,11 @@
-package com.juext.shop.base.facade;
+package com.juext.asset.goals.facade;
 
 import org.featx.spec.model.Coded;
 import org.featx.spec.model.QuerySection;
-import com.juext.shop.base.model.TransferInfo;
-import com.juext.shop.base.model.TransferItem;
-import com.juext.shop.base.model.TransferPageQueryRequest;
-import com.juext.shop.base.model.TransferSaveRequest;
+import com.juext.asset.goals.model.TransferInfo;
+import com.juext.asset.goals.model.TransferItem;
+import com.juext.asset.goals.model.TransferPageQueryRequest;
+import com.juext.asset.goals.model.TransferSaveRequest;
 
 import java.util.List;
 

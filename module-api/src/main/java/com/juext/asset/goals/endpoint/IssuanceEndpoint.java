@@ -1,8 +1,8 @@
-package com.juext.shop.base.endpoint;
+package com.juext.asset.goals.endpoint;
 
 
 import org.featx.spec.model.*;
-import com.juext.shop.base.model.*;
+import com.juext.asset.goals.model.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

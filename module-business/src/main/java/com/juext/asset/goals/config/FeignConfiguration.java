@@ -1,4 +1,4 @@
-package com.juext.shop.base.config;
+package com.juext.asset.goals.config;
 
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

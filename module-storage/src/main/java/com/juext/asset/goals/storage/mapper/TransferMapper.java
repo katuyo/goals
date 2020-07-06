@@ -1,9 +1,9 @@
-package com.juext.shop.base.storage.mapper;
+package com.juext.asset.goals.storage.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.featx.spec.model.PageRequest;
-import com.juext.shop.base.storage.entity.TransferEntity;
-import com.juext.shop.base.storage.query.TransferCriteria;
+import com.juext.asset.goals.storage.entity.TransferEntity;
+import com.juext.asset.goals.storage.query.TransferCriteria;
 
 import java.util.List;
 

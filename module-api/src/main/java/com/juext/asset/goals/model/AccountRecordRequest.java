@@ -1,4 +1,4 @@
-package com.juext.shop.base.model;
+package com.juext.asset.goals.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

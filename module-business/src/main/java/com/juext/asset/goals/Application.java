@@ -1,4 +1,4 @@
-package com.juext.shop.base;
+package com.juext.asset.goals;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;

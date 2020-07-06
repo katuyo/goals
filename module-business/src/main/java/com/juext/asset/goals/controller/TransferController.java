@@ -1,9 +1,9 @@
-package com.juext.shop.base.controller;
+package com.juext.asset.goals.controller;
 
 import org.featx.spec.model.*;
-import com.juext.shop.base.endpoint.TransferEndpoint;
-import com.juext.shop.base.facade.TransferFacade;
-import com.juext.shop.base.model.*;
+import com.juext.asset.goals.endpoint.TransferEndpoint;
+import com.juext.asset.goals.facade.TransferFacade;
+import com.juext.asset.goals.model.*;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;

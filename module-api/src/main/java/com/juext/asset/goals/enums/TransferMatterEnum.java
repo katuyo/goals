@@ -1,4 +1,4 @@
-package com.juext.shop.base.enums;
+package com.juext.asset.goals.enums;
 
 import lombok.Getter;
 

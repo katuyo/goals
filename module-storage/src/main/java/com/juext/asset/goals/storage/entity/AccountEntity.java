@@ -1,4 +1,4 @@
-package com.juext.shop.base.storage.entity;
+package com.juext.asset.goals.storage.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,8 +16,8 @@ public class AccountEntity extends AbstractUnified<Long> {
 
     private static final long serialVersionUID = -4441039419344895608L;
 
-    private String accountCode;
-
     private Double inventory;
+
+    private String comment;
 
 }

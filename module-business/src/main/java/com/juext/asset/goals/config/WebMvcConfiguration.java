@@ -1,4 +1,4 @@
-package com.juext.shop.base.config;
+package com.juext.asset.goals.config;
 
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

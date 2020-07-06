@@ -1,4 +1,4 @@
-package com.juext.shop.base.config;
+package com.juext.asset.goals.config;
 
 import org.featx.spec.feature.ModelConvert;
 import org.featx.spec.feature.ReflectionModelConverter;

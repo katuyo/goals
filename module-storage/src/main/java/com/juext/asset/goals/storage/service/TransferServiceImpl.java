@@ -1,4 +1,4 @@
-package com.juext.shop.base.storage.service;
+package com.juext.asset.goals.storage.service;
 
 import com.google.common.collect.Lists;
 import org.featx.spec.entity.AbstractUnified;
@@ -7,9 +7,9 @@ import org.featx.spec.model.PageRequest;
 import org.featx.spec.model.QuerySection;
 import org.featx.spec.util.CollectionUtil;
 import org.featx.spec.util.StringUtil;
-import com.juext.shop.base.storage.entity.TransferEntity;
-import com.juext.shop.base.storage.mapper.TransferMapper;
-import com.juext.shop.base.storage.query.TransferCriteria;
+import com.juext.asset.goals.storage.entity.TransferEntity;
+import com.juext.asset.goals.storage.mapper.TransferMapper;
+import com.juext.asset.goals.storage.query.TransferCriteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

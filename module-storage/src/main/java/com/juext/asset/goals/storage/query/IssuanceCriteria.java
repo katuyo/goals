@@ -1,4 +1,4 @@
-package com.juext.shop.base.storage.query;
+package com.juext.asset.goals.storage.query;
 
 /**
  * @author Excepts

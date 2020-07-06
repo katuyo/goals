@@ -1,4 +1,4 @@
-package com.juext.shop.base.storage.entity;
+package com.juext.asset.goals.storage.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,8 +15,6 @@ import org.featx.spec.entity.AbstractUnified;
 public class TransferEntity extends AbstractUnified<Long> {
 
     private static final long serialVersionUID = -4441039419344895608L;
-
-    private Integer type;
 
     private String fromAccountCode;
 

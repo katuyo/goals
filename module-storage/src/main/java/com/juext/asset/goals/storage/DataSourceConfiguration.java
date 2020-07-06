@@ -1,4 +1,4 @@
-package org.featx.templet.app.storage;
+package com.juext.asset.goals.storage;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.featx.spec.feature.IdGenerate;
@@ -9,10 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-
-//import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 /**
  * @author Excepts
@@ -20,8 +19,7 @@ import javax.sql.DataSource;
  */
 
 @Configuration
-//@EntityScan("org.featx.templet.app.storage.entity")
-@MapperScan("org.featx.templet.app.storage.mapper")
+@MapperScan("com.juext.asset.goals.storage.mapper")
 public class DataSourceConfiguration {
 
     @Value("${id.generate.snowflake.epoch:1}")
@@ -42,4 +40,8 @@ public class DataSourceConfiguration {
         return new SnowflakeIdWorker(epoch, dateCenterId, machineId);
     }
 
+//    @Bean
+//    public SqlSessionFactory sqlSessionFactory() {
+//        SqlSessionFactoryBean()
+//    }
 }

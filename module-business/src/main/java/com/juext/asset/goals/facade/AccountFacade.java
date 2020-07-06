@@ -1,11 +1,11 @@
-package com.juext.shop.base.facade;
+package com.juext.asset.goals.facade;
 
 import org.featx.spec.model.Coded;
 import org.featx.spec.model.QuerySection;
-import com.juext.shop.base.model.AccountInfo;
-import com.juext.shop.base.model.AccountItem;
-import com.juext.shop.base.model.AccountPageQueryRequest;
-import com.juext.shop.base.model.AccountSaveRequest;
+import com.juext.asset.goals.model.AccountInfo;
+import com.juext.asset.goals.model.AccountItem;
+import com.juext.asset.goals.model.AccountPageQueryRequest;
+import com.juext.asset.goals.model.AccountSaveRequest;
 
 import java.util.List;
 

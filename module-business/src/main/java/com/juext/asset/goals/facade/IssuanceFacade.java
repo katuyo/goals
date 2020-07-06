@@ -1,11 +1,11 @@
-package com.juext.shop.base.facade;
+package com.juext.asset.goals.facade;
 
 import org.featx.spec.model.Coded;
 import org.featx.spec.model.QuerySection;
-import com.juext.shop.base.model.IssuanceInfo;
-import com.juext.shop.base.model.IssuanceItem;
-import com.juext.shop.base.model.IssuancePageQueryRequest;
-import com.juext.shop.base.model.IssuanceSaveRequest;
+import com.juext.asset.goals.model.IssuanceInfo;
+import com.juext.asset.goals.model.IssuanceItem;
+import com.juext.asset.goals.model.IssuancePageQueryRequest;
+import com.juext.asset.goals.model.IssuanceSaveRequest;
 
 import java.util.List;
 

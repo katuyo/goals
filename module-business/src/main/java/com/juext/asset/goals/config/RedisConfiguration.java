@@ -1,4 +1,4 @@
-package com.juext.shop.base.config;
+package com.juext.asset.goals.config;
 
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;

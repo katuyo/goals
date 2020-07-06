@@ -1,16 +1,16 @@
-package com.juext.shop.base.facade;
+package com.juext.asset.goals.facade;
 
 import org.featx.spec.feature.ModelConvert;
 import org.featx.spec.model.Coded;
 import org.featx.spec.model.QuerySection;
 import org.featx.spec.util.CollectionUtil;
-import com.juext.shop.base.model.AccountInfo;
-import com.juext.shop.base.model.AccountItem;
-import com.juext.shop.base.model.AccountPageQueryRequest;
-import com.juext.shop.base.model.AccountSaveRequest;
-import com.juext.shop.base.storage.entity.AccountEntity;
-import com.juext.shop.base.storage.query.AccountCriteria;
-import com.juext.shop.base.storage.service.AccountService;
+import com.juext.asset.goals.model.AccountInfo;
+import com.juext.asset.goals.model.AccountItem;
+import com.juext.asset.goals.model.AccountPageQueryRequest;
+import com.juext.asset.goals.model.AccountSaveRequest;
+import com.juext.asset.goals.storage.entity.AccountEntity;
+import com.juext.asset.goals.storage.query.AccountCriteria;
+import com.juext.asset.goals.storage.service.AccountService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

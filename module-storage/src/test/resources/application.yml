@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    hikari:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:goals;mode=MySql;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+    schema: classpath:db/test/schema.sql
+    data: classpath:db/test/data.sql
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
