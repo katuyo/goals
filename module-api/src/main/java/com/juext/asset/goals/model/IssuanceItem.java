@@ -16,5 +16,5 @@ public class IssuanceItem extends BaseUnified {
 
     private static final long serialVersionUID = 1668164802765732399L;
 
-    private ${property.type} ${property.name};
+//    private ${property.type} ${property.name};
 }

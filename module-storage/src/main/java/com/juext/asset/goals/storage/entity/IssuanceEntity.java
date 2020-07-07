@@ -16,4 +16,7 @@ public class IssuanceEntity extends AbstractUnified<Long> {
 
     private static final long serialVersionUID = -4441039419344895608L;
 
+    private Double amount;
+
+    private String comment;
 }

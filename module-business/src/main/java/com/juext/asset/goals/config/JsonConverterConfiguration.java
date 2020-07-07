@@ -37,7 +37,7 @@ public class JsonConverterConfiguration {
         return fastJsonConfig;
     }
 
-    @Bean("sentinel-json-flow-converter")
+//    @Bean("sentinel-json-flow-converter")
     Converter jsonConverter() {
         return (Converter<String, List<AbstractRule>>) source ->
                 StringUtils.isBlank(source) ? Lists.newArrayList(): JSON.parseArray(source, AbstractRule.class);

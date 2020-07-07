@@ -1,9 +1,9 @@
 package com.juext.asset.goals.storage.mapper;
 
-import org.apache.ibatis.annotations.*;
-import org.featx.spec.model.PageRequest;
 import com.juext.asset.goals.storage.entity.AccountEntity;
 import com.juext.asset.goals.storage.query.AccountCriteria;
+import org.apache.ibatis.annotations.*;
+import org.featx.spec.model.PageRequest;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public interface AccountMapper {
             "<if test=\"entity.comment != null and entity.comment != ''\"> comment = #{entity.comment}, </if>",
             " where code = #{entity.code} and deleted = 0",
             "</script> "})
-//    @SelectKey(statement = "select updated_at from t_Account_module where id = (SELECT LAST_INSERT_ID())")
+//    @SelectKey(statement = "select updated_at from t_Account where id = (SELECT LAST_INSERT_ID())")
     void update(@Param("entity") AccountEntity AccountEntity);
 
     @Update({"update t_account set deleted = #{deleted} where code = #{code}"})
@@ -45,7 +45,7 @@ public interface AccountMapper {
             "</script>"})
     List<AccountEntity> selectByCodes(@Param("codes") List<String> codes);
 
-    @Select({"select ", COLUMUS, " from t_Account_module where deleted = 0 ",
+    @Select({"select ", COLUMUS, " from t_Account where deleted = 0 ",
             "",
             "order by id limit #{page.offset}, #{page.size}"})
     List<AccountEntity> selectByPage(@Param("query") AccountCriteria criteria, @Param("page") PageRequest page);

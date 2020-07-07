@@ -1,6 +1,6 @@
 package com.juext.asset.goals.storage.mapper;
 
-import com.juext.asset.goals.storage.SpringTestSuit;
+import com.juext.asset.goals.storage.SpringDataTestSuit;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
@@ -10,5 +10,5 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
  */
 @DisplayName("Mapper: Transfer")
 @EnableAutoConfiguration
-public class TransferMapperTest extends SpringTestSuit {
+public class TransferMapperTest extends SpringDataTestSuit {
 }

@@ -14,7 +14,7 @@ import java.util.List;
 //@Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    @Resource
+    @Resource(name = "fastJsonConverter")
     HttpMessageConverter fastJsonConverter;
 
     @Override

@@ -1,8 +1,7 @@
 package com.juext.asset.goals.storage.mapper;
 
-import com.juext.asset.goals.storage.SpringTestSuit;
+import com.juext.asset.goals.storage.SpringDataTestSuit;
 import com.juext.asset.goals.storage.entity.AccountEntity;
-
 import com.juext.asset.goals.storage.query.AccountCriteria;
 import org.assertj.core.util.Lists;
 import org.featx.spec.model.PageRequest;
@@ -12,11 +11,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
-import static org.junit.jupiter.api.Assertions.*;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Cartoon Zhang
@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 @DisplayName("Mapper: Account")
 @EnableAutoConfiguration
-public class AccountMapperTest extends SpringTestSuit {
+public class AccountMapperTest extends SpringDataTestSuit {
 
     @Resource
     private AccountMapper accountMapper;

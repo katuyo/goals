@@ -1,8 +1,6 @@
 package com.juext.asset.goals.storage.service;
 
-import com.juext.asset.goals.storage.SpringTestSuit;
 import org.junit.jupiter.api.DisplayName;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 /**
  * @author Excepts

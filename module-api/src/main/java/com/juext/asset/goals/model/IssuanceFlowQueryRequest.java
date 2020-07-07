@@ -16,5 +16,5 @@ public class IssuanceFlowQueryRequest extends FlowRequest {
 
     private static final long serialVersionUID = -3378756542362683471L;
 
-    private ${property.type} ${property.name};
+//    private ${property.type} ${property.name};
 }
