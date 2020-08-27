@@ -3,7 +3,7 @@ package com.juext.asset.goals.mapper;
 import com.juext.asset.goals.SpringDataTestSuit;
 import com.juext.asset.goals.entity.AccountEntity;
 import com.juext.asset.goals.query.AccountCriteria;
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
 import org.featx.spec.model.PageRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("Mapper: Account")
 @EnableAutoConfiguration
 @Transactional
-public class AccountMapperTest extends SpringDataTestSuit {
+class AccountMapperTest extends SpringDataTestSuit {
 
     @Resource
     private AccountMapper accountMapper;
@@ -34,7 +35,7 @@ public class AccountMapperTest extends SpringDataTestSuit {
     @DisplayName("Insert Account")
     @ParameterizedTest
     @CsvSource({"ACT00005"})
-    public void testInsert(String code) {
+    void testInsert(String code) {
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setCode(code);
         accountEntity.setInventory(19.9);
@@ -51,7 +52,7 @@ public class AccountMapperTest extends SpringDataTestSuit {
     @DisplayName("Upsert Account")
     @ParameterizedTest
     @CsvSource({"ACT00001"})
-    public void testUpsert(String code) {
+    void testUpsert(String code) {
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setCode(code);
         accountEntity.setInventory(20.001);
@@ -69,7 +70,7 @@ public class AccountMapperTest extends SpringDataTestSuit {
     @DisplayName("Update Account")
     @ParameterizedTest
     @CsvSource({"ACT00001"})
-    public void testUpdate(String code) {
+    void testUpdate(String code) {
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setCode(code);
         accountEntity.setInventory(21.002);
@@ -87,7 +88,7 @@ public class AccountMapperTest extends SpringDataTestSuit {
 
     @DisplayName("Delete Account")
     @Test
-    public void testDelete() {
+    void testDelete() {
         assertEquals(0, accountMapper.delete(null, true));
         assertEquals(0, accountMapper.delete("A1232132", true));
         assertEquals(1, accountMapper.delete("ACT00001", true));
@@ -100,7 +101,7 @@ public class AccountMapperTest extends SpringDataTestSuit {
 
     @Test
     @DisplayName("Query accounts by codes")
-    public void testSelectByCodes() {
+    void testSelectByCodes() {
         List<AccountEntity> list = accountMapper.selectByCodes(Lists.newArrayList("ACT00001", "ACT00002", "ACT00003", "ACT00004"));
         //Besides createAt and updateAt, expect equals
         list.forEach(accountEntity -> {
@@ -151,15 +152,15 @@ public class AccountMapperTest extends SpringDataTestSuit {
 
     @Test
     @DisplayName("Query accounts page by criteria and limit")
-    public void testSelectByPage() {
+    void testSelectByPage() {
         AccountCriteria accountCriteria = generate(AccountCriteria.class);
         accountMapper.selectByPage(accountCriteria, new PageRequest());
     }
 
     @Test
     @DisplayName("Count accounts of criteria")
-    public void testCountByQuery() {
+    void testCountByQuery() {
         AccountCriteria accountCriteria = generate(AccountCriteria.class);
-        accountMapper.countByQuery(accountCriteria);
+        assertEquals(0, accountMapper.countByQuery(accountCriteria));
     }
 }

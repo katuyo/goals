@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface IssuanceMapper {
 
-    String COLUMUS = "t.id, t.code, t.name, t.type, t.amount, t.account_code, t.comment, t.deleted, t.created_at, t.updated_at";
+    String COLUMNS = "t.id, t.code, t.name, t.type, t.amount, t.account_code, t.comment, t.deleted, t.created_at, t.updated_at";
     String PAGE_CRITERIA = "<if test=\"query.id != null\">and t.id = #{query.id}</if>" +
             "<if test=\"query.code != null\">and t.code = #{query.code}</if>" +
             "<if test=\"query.name != null\">and t.name = #{query.name}</if>" +
@@ -27,15 +27,16 @@ public interface IssuanceMapper {
     @Insert({"insert into t_issuance(code, name, type, amount, account_code, comment) ",
             "values(#{entity.code}, #{entity.name}, #{entity.type}, #{entity.amount}, #{entity.accountCode}, ",
             "#{entity.comment})"})
-    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "entity.id", before = false, resultType = Long.class)
-    void insert(@Param("entity") IssuanceEntity IssuanceEntity);
+    @SelectKey(keyProperty = "entity.id", before = false, resultType = Long.class,
+            statement = "select t.id from t_issuance t where t.code=#{entity.code}")
+    int insert(@Param("entity") IssuanceEntity issuanceEntity);
 
     @Update({"update t_issuance set name = #{entity.name},",
             " type = #{entity.type}, amount = #{entity.amount},",
             " account_code = #{entity.accountCode},",
             " comment = #{entity.comment} ",
             " where code = #{entity.code} and deleted = 0"})
-    void upsert(@Param("entity") IssuanceEntity IssuanceEntity);
+    int upsert(@Param("entity") IssuanceEntity issuanceEntity);
 
     @Update({"<script>update t_issuance <set>",
             "<if test=\"entity.name != null and entity.name != ''\"> name = #{entity.name},</if>",
@@ -45,20 +46,20 @@ public interface IssuanceMapper {
             "<if test=\"entity.comment != null and entity.comment != ''\"> comment = #{entity.comment}, </if>",
             "</set> where code = #{entity.code} and deleted = 0",
             "</script> "})
-    void update(@Param("entity") IssuanceEntity IssuanceEntity);
+    int update(@Param("entity") IssuanceEntity issuanceEntity);
 
     @Update({"update t_issuance set deleted = #{deleted} where code = #{code}"})
-    void delete(@Param("code") String code, @Param("deleted") Boolean delete);
+    int delete(@Param("code") String code, @Param("deleted") Boolean delete);
 
-    @Select({"select", COLUMUS, "from t_issuance t where t.deleted = 0 and t.code = #{code} limit 1"})
+    @Select({"select", COLUMNS, "from t_issuance t where t.deleted = 0 and t.code = #{code} limit 1"})
     IssuanceEntity selectByCode(@Param("code") String code);
 
-    @Select({"<script>select", COLUMUS, "from t_issuance t where t.deleted = 0 and t.code in",
+    @Select({"<script>select", COLUMNS, "from t_issuance t where t.deleted = 0 and t.code in",
             "<foreach collection='codes' item='code' open='(' separator=',' close=')'>#{code}</foreach>",
             "</script>"})
     List<IssuanceEntity> selectByCodes(@Param("codes") List<String> codes);
 
-    @Select({"<script>select", COLUMUS, "from t_issuance t where t.deleted = 0 ",
+    @Select({"<script>select", COLUMNS, "from t_issuance t where t.deleted = 0 ",
             PAGE_CRITERIA, "order by t.id limit #{page.offset}, #{page.size}",
             "</script>"})
     List<IssuanceEntity> selectByPage(@Param("query") IssuanceCriteria criteria, @Param("page") PageRequest page);

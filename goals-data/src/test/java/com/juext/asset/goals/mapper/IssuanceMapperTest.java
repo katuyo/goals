@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Mapper: Issuance")
 @Transactional
 @EnableAutoConfiguration
-public class IssuanceMapperTest extends SpringDataTestSuit {
+class IssuanceMapperTest extends SpringDataTestSuit {
     @Resource
     private IssuanceMapper issuanceMapper;
 
     @ParameterizedTest(name = "Insert Issuance")
     @CsvSource({"ISC00005"})
-    public void testInsert(String code) {
+    void testInsert(String code) {
         IssuanceEntity issuanceEntity = new IssuanceEntity();
         issuanceEntity.setCode(code);
         issuanceEntity.setName("");
@@ -43,38 +42,55 @@ public class IssuanceMapperTest extends SpringDataTestSuit {
         issuanceMapper.insert(issuanceEntity);
 
         IssuanceEntity foundIssuance = issuanceMapper.selectByCode(code);
+        issuanceEntity.setDeleted(false);
+        foundIssuance.setCreatedAt(null);
+        foundIssuance.setUpdatedAt(null);
         assertEquals(foundIssuance, issuanceEntity);
     }
 
-    @ParameterizedTest(name = "Upsert Issuance")
-    @CsvSource({"ACT00005"})
-    public void testUpsert(String code) {
+    @Test@DisplayName("Upsert")
+    void testUpsert() {
         IssuanceEntity issuanceEntity = new IssuanceEntity();
-        issuanceEntity.setCode(code);
-        issuanceEntity.setAmount(19.9);
-        issuanceEntity.setComment("Comment");
+        issuanceEntity.setName("issuanceNameName");
+        issuanceEntity.setCode("ISC00004");
+        issuanceEntity.setType(3);
+        issuanceEntity.setAmount(300009.9);
+        issuanceEntity.setComment("CommentComment");
+        issuanceEntity.setAccountCode("ACT00001");
         issuanceMapper.upsert(issuanceEntity);
 
-        IssuanceEntity foundIssuance = issuanceMapper.selectByCode(code);
+        IssuanceEntity foundIssuance = issuanceMapper.selectByCode("ISC00004");
+        issuanceEntity.setId(foundIssuance.getId());
+        issuanceEntity.setDeleted(foundIssuance.getDeleted());
+        issuanceEntity.setCreatedAt(foundIssuance.getCreatedAt());
+        issuanceEntity.setUpdatedAt(foundIssuance.getUpdatedAt());
         assertEquals(foundIssuance, issuanceEntity);
     }
 
-    @ParameterizedTest(name = "Update Account")
-    @CsvSource({"ACT00005"})
-    public void testUpdate(String code) {
+    @Test@DisplayName("Update")
+    void testUpdate() {
         IssuanceEntity issuanceEntity = new IssuanceEntity();
-        issuanceEntity.setCode(code);
-        issuanceEntity.setAmount(19.9);
-        issuanceEntity.setComment("Comment");
+        issuanceEntity.setCode("ISC00003");
+        issuanceEntity.setAmount(91.9009);
+        issuanceEntity.setAccountCode("ACT99991");
+        issuanceEntity.setComment("tnemmoC");
+        issuanceEntity.setName("CoolName");
+        issuanceEntity.setType(8);
         issuanceMapper.update(issuanceEntity);
 
-        IssuanceEntity foundIssuance = issuanceMapper.selectByCode(code);
+        IssuanceEntity foundIssuance = issuanceMapper.selectByCode("ISC00003");
+
+        issuanceEntity.setCreatedAt(foundIssuance.getCreatedAt());
+        issuanceEntity.setUpdatedAt(foundIssuance.getUpdatedAt());
+        issuanceEntity.setId(foundIssuance.getId());
+        issuanceEntity.setDeleted(foundIssuance.getDeleted());
+
         assertEquals(foundIssuance, issuanceEntity);
     }
 
     @ParameterizedTest(name = "Delete Account")
     @CsvSource({"ACT00005"})
-    public void testDelete(String code) {
+    void testDelete(String code) {
         issuanceMapper.delete(code, true);
         Optional.ofNullable(issuanceMapper.selectByCode(code)).ifPresent(accountEntity -> {
             throw new RuntimeException("Should be null");
@@ -82,9 +98,13 @@ public class IssuanceMapperTest extends SpringDataTestSuit {
     }
 
     @Test
-    @DisplayName("Query accounts by codes")
-    public void testSelectByCodes() {
+    @DisplayName("Query issuance by codes")
+    void testSelectByCodes() {
         List<IssuanceEntity> list = issuanceMapper.selectByCodes(Lists.newArrayList("ISC00001", "ISC00002", "ISC00003", "ISC00004"));
+        list.forEach(issuanceEntity -> {
+            issuanceEntity.setCreatedAt(null);
+            issuanceEntity.setUpdatedAt(null);
+        });
         assertEquals(preparedIssuanceList(), list);
     }
 
@@ -98,20 +118,48 @@ public class IssuanceMapperTest extends SpringDataTestSuit {
         issuance1.setAmount(5000.00000001);
         issuance1.setComment("This is the first goals issuance");
         issuance1.setDeleted(false);
-        issuance1.setUpdatedAt(LocalDateTime.now());
-        issuance1.setCreatedAt(LocalDateTime.now());
 
-        return Lists.newArrayList(issuance1);
+        IssuanceEntity issuance2 = new IssuanceEntity();
+        issuance2.setId(2L);
+        issuance2.setCode("ISC00002");
+        issuance2.setName("Issuance 002");
+        issuance2.setType(1);
+        issuance2.setAccountCode("ACT00002");
+        issuance2.setAmount(6000.00000001);
+        issuance2.setComment("This is the second goals issuance");
+        issuance2.setDeleted(false);
+
+        IssuanceEntity issuance3 = new IssuanceEntity();
+        issuance3.setId(3L);
+        issuance3.setCode("ISC00003");
+        issuance3.setName("Issuance 003");
+        issuance3.setType(0);
+        issuance3.setAccountCode("ACT00003");
+        issuance3.setAmount(7000.00000001);
+        issuance3.setComment("This is the third goals issuance");
+        issuance3.setDeleted(false);
+
+        IssuanceEntity issuance4 = new IssuanceEntity();
+        issuance4.setId(4L);
+        issuance4.setCode("ISC00004");
+        issuance4.setName("Issuance 004");
+        issuance4.setType(1);
+        issuance4.setAccountCode("ACT00004");
+        issuance4.setAmount(9000.00000001);
+        issuance4.setComment("This is the fourth goals issuance");
+        issuance4.setDeleted(false);
+
+        return Lists.newArrayList(issuance1, issuance2, issuance3, issuance4);
     }
 
     @Test
-    public void testSelectByPage() {
+    void testSelectByPage() {
         IssuanceCriteria issuanceCriteria = generate(IssuanceCriteria.class);
         issuanceMapper.selectByPage(issuanceCriteria, new PageRequest());
     }
 
     @Test
-    public void testCountByQuery() {
+    void testCountByQuery() {
         IssuanceCriteria issuanceCriteria = generate(IssuanceCriteria.class);
         issuanceMapper.countByQuery(issuanceCriteria);
     }

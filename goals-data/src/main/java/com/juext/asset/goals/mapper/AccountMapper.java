@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface AccountMapper {
 
-    String COLUMUS = "t.id, t.code, t.name, t.type, t.inventory, t.comment, t.deleted, t.created_at, t.updated_at";
+    String COLUMNS = "t.id, t.code, t.name, t.type, t.inventory, t.comment, t.deleted, t.created_at, t.updated_at";
     String PAGE_CRITERIA = "<if test=\"query.id != null\">and t.id = #{query.id}</if>" +
             "<if test=\"query.code != null\">and t.code = #{query.code}</if>" +
             "<if test=\"query.name != null\">and t.name = #{query.name}</if>" +
@@ -25,33 +25,34 @@ public interface AccountMapper {
 
     @Insert({"insert into t_account(code, inventory, comment) ",
             "values(#{entity.code}, #{entity.inventory}, #{entity.comment})"})
-    @SelectKey(statement = "select last_insert_id()", keyProperty = "entity.id", before = false, resultType = Long.class)
-    int insert(@Param("entity") AccountEntity AccountEntity);
+    @SelectKey(keyProperty = "entity.id", before = false, resultType = Long.class,
+            statement = "select t.id from t_account t where t.code=#{entity.code}")
+    int insert(@Param("entity") AccountEntity accountEntity);
 
     @Update({"<script>update t_account <set> inventory = #{entity.inventory},",
             " comment = #{entity.comment}, ",
             "</set> where code = #{entity.code} and deleted = 0</script>"})
-    int upsert(@Param("entity") AccountEntity AccountEntity);
+    int upsert(@Param("entity") AccountEntity accountEntity);
 
     @Update({"<script>update t_account <set> ",
             "<if test=\"entity.status != null\"> status = #{entity.status},</if>",
             "<if test=\"entity.comment != null and entity.comment != ''\"> comment = #{entity.comment},</if>",
             "</set> where code = #{entity.code} and deleted = 0",
             "</script> "})
-    int update(@Param("entity") AccountEntity AccountEntity);
+    int update(@Param("entity") AccountEntity accountEntity);
 
     @Update({"update t_account set deleted = #{deleted} where code = #{code}"})
     int delete(@Param("code") String code, @Param("deleted") Boolean delete);
 
-    @Select({"select", COLUMUS, " from t_account t where t.deleted = 0 and t.code = #{code} limit 1"})
+    @Select({"select", COLUMNS, " from t_account t where t.deleted = 0 and t.code = #{code} limit 1"})
     AccountEntity selectByCode(@Param("code") String code);
 
-    @Select({"<script>select ", COLUMUS, " from t_account t where t.deleted = 0 and t.code in ",
+    @Select({"<script>select ", COLUMNS, " from t_account t where t.deleted = 0 and t.code in ",
             "<foreach collection='codes' item='code' open='(' separator=',' close=')'>#{code}</foreach>",
             "</script>"})
     List<AccountEntity> selectByCodes(@Param("codes") List<String> codes);
 
-    @Select({"<script>select", COLUMUS, "from t_account t where t.deleted = 0 ",
+    @Select({"<script>select", COLUMNS, "from t_account t where t.deleted = 0 ",
             PAGE_CRITERIA, "order by t.id limit #{page.offset}, #{page.size}",
             "</script>"})
     List<AccountEntity> selectByPage(@Param("query") AccountCriteria criteria, @Param("page") PageRequest page);

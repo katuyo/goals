@@ -15,8 +15,6 @@ public interface TransferService {
 
     void save(TransferEntity TransferEntity);
 
-    void update(TransferEntity TransferEntity);
-
     void delete(String code);
 
     TransferEntity findOne(String code);

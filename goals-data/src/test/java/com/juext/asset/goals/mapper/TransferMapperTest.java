@@ -12,25 +12,22 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Excepts
  * @since 2020/7/6 22:49
  */
 @DisplayName("Mapper: Transfer")
 @EnableAutoConfiguration
-public class TransferMapperTest extends SpringDataTestSuit {
+class TransferMapperTest extends SpringDataTestSuit {
     @Resource
     private TransferMapper transferMapper;
 
     @ParameterizedTest(name = "Insert Transfer")
     @CsvSource({"TSF00005"})
-    public void testInsert(String code) {
+    void testInsert(String code) {
         TransferEntity transferEntity = new TransferEntity();
         transferEntity.setCode(code);
         transferEntity.setName("");
@@ -45,48 +42,42 @@ public class TransferMapperTest extends SpringDataTestSuit {
         transferMapper.insert(transferEntity);
 
         TransferEntity foundTransfer = transferMapper.selectByCode(code);
-        assertEquals(foundTransfer, transferEntity);
-    }
+        transferEntity.setDeleted(foundTransfer.getDeleted());
+        transferEntity.setCreatedAt(foundTransfer.getCreatedAt());
+        transferEntity.setUpdatedAt(foundTransfer.getUpdatedAt());
 
-    @ParameterizedTest(name = "Upsert Transfer")
-    @CsvSource({"TSF00005"})
-    public void testUpsert(String code) {
-        TransferEntity transferEntity = new TransferEntity();
-        transferEntity.setCode(code);
-        transferEntity.setAmount(19.9);
-        transferEntity.setComment("Comment");
-        transferMapper.upsert(transferEntity);
-
-        TransferEntity foundTransfer = transferMapper.selectByCode(code);
-        assertEquals(foundTransfer, transferEntity);
-    }
-
-    @ParameterizedTest(name = "Update Transfer")
-    @CsvSource({"TSF00005"})
-    public void testUpdate(String code) {
-        TransferEntity transferEntity = new TransferEntity();
-        transferEntity.setCode(code);
-        transferEntity.setAmount(19.9);
-        transferEntity.setComment("Comment");
-        transferMapper.update(transferEntity);
-
-        TransferEntity foundTransfer = transferMapper.selectByCode(code);
-        assertEquals(foundTransfer, transferEntity);
-    }
-
-    @ParameterizedTest(name = "Delete Transfer")
-    @CsvSource({"TSF00005"})
-    public void testDelete(String code) {
-        transferMapper.delete(code, true);
-        Optional.ofNullable(transferMapper.selectByCode(code)).ifPresent(transferEntity -> {
-            throw new RuntimeException("Should be null");
-        });
+        assertEquals(transferEntity, foundTransfer);
     }
 
     @Test
+    @DisplayName("Delete Transfer")
+    void testDelete() {
+        assertEquals(0, transferMapper.delete("TSF00005", true));
+        assertEquals(0, transferMapper.delete("TSF00005", false));
+
+        assertEquals(1, transferMapper.delete("TSF00001", true));
+        assertNull(transferMapper.selectByCode("TSF00001"));
+        assertEquals(1, transferMapper.delete("TSF00001", false));
+        assertNotNull(transferMapper.selectByCode("TSF00001"));
+
+    }
+
+    @Test@DisplayName("Query By Ref")
+    void testSelectByReference() {
+        assertNull(transferMapper.selectByReference("", ""));
+        assertNotNull(transferMapper.selectByReference("Order", "ORD912hjr43hnfda"));
+    }
+
+
+
+    @Test
     @DisplayName("Query transfers by codes")
-    public void testSelectByCodes() {
+    void testSelectByCodes() {
         List<TransferEntity> list = transferMapper.selectByCodes(Lists.newArrayList("TSF00001", "TSF00002", "TSF00003", "TSF00004"));
+        list.forEach(transferEntity -> {
+            transferEntity.setCreatedAt(null);
+            transferEntity.setUpdatedAt(null);
+        });
         assertEquals(preparedIssuanceList(), list);
     }
 
@@ -94,28 +85,69 @@ public class TransferMapperTest extends SpringDataTestSuit {
         TransferEntity transfer1 = new TransferEntity();
         transfer1.setId(1L);
         transfer1.setCode("TSF00001");
-        transfer1.setName("Transfer 001");
-        transfer1.setType(0);
+        transfer1.setName("Transfer1");
+        transfer1.setType(1);
         transfer1.setFromAccountCode("ACT00001");
         transfer1.setToAccountCode("ACT00002");
-        transfer1.setAmount(5000.00000001);
+        transfer1.setAmount(101.01);
         transfer1.setMatter(1);
-        transfer1.setComment("This is a transfer");
+        transfer1.setReference("Order");
+        transfer1.setReferenceCode("ORD912hjr43hnfda");
+        transfer1.setComment("comment1");
         transfer1.setDeleted(false);
-        transfer1.setUpdatedAt(LocalDateTime.now());
-        transfer1.setCreatedAt(LocalDateTime.now());
 
-        return Lists.newArrayList(transfer1);
+        TransferEntity transfer2 = new TransferEntity();
+        transfer2.setId(2L);
+        transfer2.setCode("TSF00002");
+        transfer2.setName("Transfer2");
+        transfer2.setType(2);
+        transfer2.setFromAccountCode("ACT00001");
+        transfer2.setToAccountCode("ACT00002");
+        transfer2.setAmount(202.02);
+        transfer2.setMatter(2);
+        transfer2.setReference("Campaign");
+        transfer2.setReferenceCode("CPN3294ueh2jfda");
+        transfer2.setComment("comment2");
+        transfer2.setDeleted(false);
+
+        TransferEntity transfer3 = new TransferEntity();
+        transfer3.setId(3L);
+        transfer3.setCode("TSF00003");
+        transfer3.setName("Transfer3");
+        transfer3.setType(3);
+        transfer3.setFromAccountCode("ACT00001");
+        transfer3.setToAccountCode("ACT00002");
+        transfer3.setAmount(303.03);
+        transfer3.setMatter(3);
+        transfer3.setReference("Award");
+        transfer3.setReferenceCode("AWD432j2fh92");
+        transfer3.setComment("comment3");
+        transfer3.setDeleted(false);
+
+        TransferEntity transfer4 = new TransferEntity();
+        transfer4.setId(4L);
+        transfer4.setCode("TSF00004");
+        transfer4.setName("Transfer4");
+        transfer4.setType(4);
+        transfer4.setFromAccountCode("ACT00001");
+        transfer4.setToAccountCode("ACT00002");
+        transfer4.setAmount(404.04);
+        transfer4.setMatter(4);
+        transfer4.setReference("Default");
+        transfer4.setReferenceCode("DFT8329urh");
+        transfer4.setComment("comment4");
+        transfer4.setDeleted(false);
+        return Lists.newArrayList(transfer1, transfer2, transfer3, transfer4);
     }
 
     @Test
-    public void testSelectByPage() {
+    void testSelectByPage() {
         TransferCriteria transferCriteria = generate(TransferCriteria.class);
         transferMapper.selectByPage(transferCriteria, new PageRequest());
     }
 
     @Test
-    public void testCountByQuery() {
+    void testCountByQuery() {
         TransferCriteria transferCriteria = generate(TransferCriteria.class);
         transferMapper.countByQuery(transferCriteria);
     }

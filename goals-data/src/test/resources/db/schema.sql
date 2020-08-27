@@ -1,5 +1,4 @@
-create table if not exists `t_account`
-(
+create table if not exists `t_account` (
     `id`         bigint unsigned  not null auto_increment primary key,
     `code`       varchar(16)      not null default '''',
     `name`       varchar(64)      not null default '''',
@@ -12,8 +11,7 @@ create table if not exists `t_account`
     unique index `unq_account_code` (`code`)
 );
 
-create table if not exists `t_issuance`
-(
+create table if not exists `t_issuance` (
     `id`           bigint unsigned  not null auto_increment primary key,
     `code`         varchar(16)      not null default '''',
     `name`         varchar(64)      not null default '''',
@@ -27,8 +25,7 @@ create table if not exists `t_issuance`
     unique index `unq_issuance_code` (`code`)
 );
 
-create table if not exists `t_transfer`
-(
+create table if not exists `t_transfer`(
     `id`                bigint unsigned  not null auto_increment primary key,
     `code`              varchar(16)      not null default '''',
     `name`              varchar(64)      not null default '''',

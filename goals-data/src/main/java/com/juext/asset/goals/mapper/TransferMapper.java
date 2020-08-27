@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface TransferMapper {
 
-    String COLUMUS = "t.id, t.code, t.name, t.type, t.from_account_code, t.to_account_code, t.amount, t.matter," +
+    String COLUMNS = "t.id, t.code, t.name, t.type, t.from_account_code, t.to_account_code, t.amount, t.matter," +
             " t.reference, t.reference_code, t.comment, t.deleted, t.created_at, t.updated_at";
     String PAGE_CRITERIA = "<if test=\"query.id != null\">and t.id = #{query.id}</if>" +
             "<if test=\"query.code != null\">and t.code = #{query.code}</if>" +
@@ -33,42 +33,26 @@ public interface TransferMapper {
             "reference, reference_code, comment) ",
             "values(#{entity.code}, #{entity.name}, #{entity.type}, #{entity.fromAccountCode}, #{entity.toAccountCode}, ",
             "#{entity.amount}, #{entity.matter}, #{entity.reference}, #{entity.referenceCode}, #{entity.comment})"})
-    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "entity.id", before = false, resultType = Long.class)
-    void insert(@Param("entity") TransferEntity TransferEntity);
-
-    @Update({"update t_transfer set name = #{entity.name}, type = #{entity.type}, ",
-            "from_account_code = #{entity.fromAccountCode}, to_account_code = #{entity.toAccountCode}, ",
-            "amount = #{entity.amount}, matter = #{entity.matter}, reference = #{entity.reference}, ",
-            "reference_code=#{entity.referenceCode}, comment = #{entity.comment} ",
-            "where code = #{entity.code} and deleted = 0"})
-    void upsert(@Param("entity") TransferEntity TransferEntity);
-
-    @Update({"<script>update t_transfer <set> ",
-            "<if test=\"entity.name != null and entity.name != ''\"> name = #{entity.name},</if>",
-            "<if test=\"entity.type != null\"> type = #{entity.type},</if>",
-            "<if test=\"entity.fromAccountCode != null and entity.fromAccountCode != ''\"> from_account_code = #{entity.fromAccountCode},</if>",
-            "<if test=\"entity.toAccountCode != null and entity.toAccountCode != ''\"> to_account_code = #{entity.toAccountCode},</if>",
-            "<if test=\"entity.amount != null\"> amount = #{entity.amount},</if>",
-            "<if test=\"entity.matter != null and entity.matter != ''\"> matter = #{entity.matter}, </if>",
-            "<if test=\"entity.reference != null and entity.reference != ''\"> reference = #{entity.reference}, </if>",
-            "<if test=\"entity.referenceCode != null and entity.referenceCode != ''\"> reference_code = #{entity.referenceCode}, </if>",
-            "<if test=\"entity.comment != null and entity.comment != ''\"> comment = #{entity.comment}, </if>",
-            "</set> where code = #{entity.code} and deleted = 0",
-            "</script> "})
-    void update(@Param("entity") TransferEntity TransferEntity);
+    @SelectKey(keyProperty = "entity.id", before = false, resultType = Long.class,
+            statement = "select t.id from t_transfer t where t.code=#{entity.code}")
+    int insert(@Param("entity") TransferEntity transferEntity);
 
     @Update({"update t_transfer set deleted = #{deleted} where code = #{code}"})
-    void delete(@Param("code") String code, @Param("deleted") Boolean delete);
+    int delete(@Param("code") String code, @Param("deleted") Boolean delete);
 
-    @Select({"select", COLUMUS, "from t_transfer t where t.deleted = 0 and t.code = #{code} limit 1"})
+    @Select({"select", COLUMNS, "from t_transfer t where t.deleted = 0 and t.code = #{code} limit 1"})
     TransferEntity selectByCode(@Param("code") String code);
 
-    @Select({"<script>select", COLUMUS, "from t_transfer t where t.deleted = 0 and t.code in",
+    @Select({"<script>select", COLUMNS, "from t_transfer t where t.deleted = 0 and t.code in",
             "<foreach collection='codes' item='code' open='(' separator=',' close=')'>#{code}</foreach>",
             "</script>"})
     List<TransferEntity> selectByCodes(@Param("codes") List<String> codes);
 
-    @Select({"<script>select", COLUMUS, "from t_transfer t where t.deleted = 0 ",
+    @Select({"<script>select", COLUMNS, "from t_transfer t where t.deleted = 0 ",
+            "and t.reference=#{ref} and t.reference_code=#{refCode}</script>"})
+    TransferEntity selectByReference(@Param("ref")String ref, @Param("refCode") String refCode);
+
+    @Select({"<script>select", COLUMNS, "from t_transfer t where t.deleted = 0 ",
             PAGE_CRITERIA, "order by t.id limit #{page.offset}, #{page.size}</script>"})
     List<TransferEntity> selectByPage(@Param("query") TransferCriteria criteria, @Param("page") PageRequest page);
 
