@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
 
-    group = "org.featx.templet"
+    group = "com.juext.asset.goals"
     version = "1.0.0-SNAPSHOT"
     java.sourceCompatibility = JavaVersion.VERSION_14
     java.targetCompatibility = JavaVersion.VERSION_14

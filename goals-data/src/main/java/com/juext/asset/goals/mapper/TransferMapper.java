@@ -1,0 +1,78 @@
+package com.juext.asset.goals.mapper;
+
+import com.juext.asset.goals.entity.TransferEntity;
+import com.juext.asset.goals.query.TransferCriteria;
+import org.apache.ibatis.annotations.*;
+import org.featx.spec.model.PageRequest;
+
+import java.util.List;
+
+/**
+ * @author Excepts
+ * @since 2020/4/12 13:49
+ */
+@Mapper
+public interface TransferMapper {
+
+    String COLUMUS = "t.id, t.code, t.name, t.type, t.from_account_code, t.to_account_code, t.amount, t.matter," +
+            " t.reference, t.reference_code, t.comment, t.deleted, t.created_at, t.updated_at";
+    String PAGE_CRITERIA = "<if test=\"query.id != null\">and t.id = #{query.id}</if>" +
+            "<if test=\"query.code != null\">and t.code = #{query.code}</if>" +
+            "<if test=\"query.name != null\">and t.name = #{query.name}</if>" +
+            "<if test=\"query.type != null\">and t.type = #{query.type}</if>" +
+            "<if test=\"query.amountMax != null\">and t.amount &lt;= #{query.amountMax}</if>" +
+            "<if test=\"query.amountMin != null\">and t.amount &gt;= #{query.amountMin}</if>" +
+            "<if test=\"query.reference != null\">and t.reference = #{query.reference}</if>" +
+            "<if test=\"query.referenceCode != null\">and t.reference_code = #{query.referenceCode}</if>" +
+            "<if test=\"query.matter != null\">and t.matter = #{query.matter}</if>" +
+            "<if test=\"query.fromAccountCode != null\">and t.from_account_code = #{query.fromAccountCode}</if>" +
+            "<if test=\"query.toAccountCode != null\">and t.to_account_code = #{query.toAccountCode}</if>" +
+            "<if test=\"query.comment != null\">and t.comment = #{query.comment}</if>";
+
+    @Insert({"insert into t_transfer(code, name, type, from_account_code, to_account_code, amount, matter, ",
+            "reference, reference_code, comment) ",
+            "values(#{entity.code}, #{entity.name}, #{entity.type}, #{entity.fromAccountCode}, #{entity.toAccountCode}, ",
+            "#{entity.amount}, #{entity.matter}, #{entity.reference}, #{entity.referenceCode}, #{entity.comment})"})
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "entity.id", before = false, resultType = Long.class)
+    void insert(@Param("entity") TransferEntity TransferEntity);
+
+    @Update({"update t_transfer set name = #{entity.name}, type = #{entity.type}, ",
+            "from_account_code = #{entity.fromAccountCode}, to_account_code = #{entity.toAccountCode}, ",
+            "amount = #{entity.amount}, matter = #{entity.matter}, reference = #{entity.reference}, ",
+            "reference_code=#{entity.referenceCode}, comment = #{entity.comment} ",
+            "where code = #{entity.code} and deleted = 0"})
+    void upsert(@Param("entity") TransferEntity TransferEntity);
+
+    @Update({"<script>update t_transfer <set> ",
+            "<if test=\"entity.name != null and entity.name != ''\"> name = #{entity.name},</if>",
+            "<if test=\"entity.type != null\"> type = #{entity.type},</if>",
+            "<if test=\"entity.fromAccountCode != null and entity.fromAccountCode != ''\"> from_account_code = #{entity.fromAccountCode},</if>",
+            "<if test=\"entity.toAccountCode != null and entity.toAccountCode != ''\"> to_account_code = #{entity.toAccountCode},</if>",
+            "<if test=\"entity.amount != null\"> amount = #{entity.amount},</if>",
+            "<if test=\"entity.matter != null and entity.matter != ''\"> matter = #{entity.matter}, </if>",
+            "<if test=\"entity.reference != null and entity.reference != ''\"> reference = #{entity.reference}, </if>",
+            "<if test=\"entity.referenceCode != null and entity.referenceCode != ''\"> reference_code = #{entity.referenceCode}, </if>",
+            "<if test=\"entity.comment != null and entity.comment != ''\"> comment = #{entity.comment}, </if>",
+            "</set> where code = #{entity.code} and deleted = 0",
+            "</script> "})
+    void update(@Param("entity") TransferEntity TransferEntity);
+
+    @Update({"update t_transfer set deleted = #{deleted} where code = #{code}"})
+    void delete(@Param("code") String code, @Param("deleted") Boolean delete);
+
+    @Select({"select", COLUMUS, "from t_transfer t where t.deleted = 0 and t.code = #{code} limit 1"})
+    TransferEntity selectByCode(@Param("code") String code);
+
+    @Select({"<script>select", COLUMUS, "from t_transfer t where t.deleted = 0 and t.code in",
+            "<foreach collection='codes' item='code' open='(' separator=',' close=')'>#{code}</foreach>",
+            "</script>"})
+    List<TransferEntity> selectByCodes(@Param("codes") List<String> codes);
+
+    @Select({"<script>select", COLUMUS, "from t_transfer t where t.deleted = 0 ",
+            PAGE_CRITERIA, "order by t.id limit #{page.offset}, #{page.size}</script>"})
+    List<TransferEntity> selectByPage(@Param("query") TransferCriteria criteria, @Param("page") PageRequest page);
+
+    @Select({"<script>select count(1) from t_transfer t where t.deleted = 0 ",
+            PAGE_CRITERIA, "</script>"})
+    long countByQuery(@Param("query") TransferCriteria criteria);
+}

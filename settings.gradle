@@ -1,4 +1,10 @@
 rootProject.name = "goals"
-include("module-api")
-include("module-business")
-include("module-storage")
+include("goals-spec")
+include("goals-core")
+include("goals-data")
+
+include("goals-http")
+//include("goals-mgsq")
+//include("goals-cron")
+//include("goals-dubo")
+//include("goals-grpc")
