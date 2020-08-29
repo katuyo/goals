@@ -13,11 +13,13 @@ import java.util.List;
  */
 public interface AccountService {
 
-    void save(AccountEntity AccountEntity);
+    void save(AccountEntity accountEntity);
 
-    void update(AccountEntity AccountEntity);
+    void update(AccountEntity accountEntity);
 
     void delete(String code);
+
+    void transfer(String fromAccountCode, String toAccountCode, Double amount);
 
     AccountEntity findOne(String code);
 

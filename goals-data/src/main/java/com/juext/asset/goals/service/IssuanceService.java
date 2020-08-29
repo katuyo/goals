@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface IssuanceService {
 
-    void save(IssuanceEntity IssuanceEntity);
+    void save(IssuanceEntity issuanceEntity);
 
-    void update(IssuanceEntity IssuanceEntity);
+    void update(IssuanceEntity issuanceEntity);
 
     void delete(String code);
 

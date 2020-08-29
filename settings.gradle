@@ -1,4 +1,5 @@
 rootProject.name = "goals"
+include("goals-base")
 include("goals-spec")
 include("goals-core")
 include("goals-data")

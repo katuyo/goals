@@ -8,6 +8,7 @@ plugins {
 }
 
 dependencies {
+    compile(project(":goals-base"))
     implementation("org.featx.spec:spec:${featxSpecVersion}")
     implementation("com.google.guava:guava:${guavaVersion}")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.0.2.RELEASE")

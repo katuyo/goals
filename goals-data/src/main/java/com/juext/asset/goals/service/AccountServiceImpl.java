@@ -2,8 +2,10 @@ package com.juext.asset.goals.service;
 
 import com.google.common.collect.Lists;
 import com.juext.asset.goals.entity.AccountEntity;
+import com.juext.asset.goals.error.GoalsErrorEnum;
+import com.juext.asset.goals.mapper.AccountMapper;
 import com.juext.asset.goals.query.AccountCriteria;
-import org.featx.spec.entity.AbstractUnified;
+import org.featx.spec.error.BusinessException;
 import org.featx.spec.feature.IdGenerate;
 import org.featx.spec.model.PageRequest;
 import org.featx.spec.model.QuerySection;
@@ -13,10 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.juext.asset.goals.Constant.CODE_PREFIX_ACCOUNT;
+import static com.juext.asset.goals.Constant.DEFAULT_RADIX;
 
 /**
  * @author Excepts
@@ -26,58 +31,76 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
 
     @Resource
-    private com.juext.asset.goals.mapper.AccountMapper AccountMapper;
+    private AccountMapper accountMapper;
 
     @Resource
     private IdGenerate idGenerate;
+
     @Override
     @Transactional
-    public void save(AccountEntity AccountEntity) {
-        if (StringUtil.isBlank(AccountEntity.getCode())) {
-            AccountEntity.setCode(String.format("%s%s", "DFM", Long.toString(idGenerate.nextId(), 36)));
-            AccountMapper.insert(AccountEntity);
+    public void save(AccountEntity accountEntity) {
+        if (StringUtil.isBlank(accountEntity.getCode())) {
+            accountEntity.setCode(String.format("%s%s", CODE_PREFIX_ACCOUNT,
+                    Long.toString(idGenerate.nextId(), DEFAULT_RADIX)));
+            accountMapper.insert(accountEntity);
         } else {
-            AccountMapper.upsert(AccountEntity);
+            accountMapper.upsert(accountEntity);
         }
     }
 
     @Override
     @Transactional
-    public void update(AccountEntity AccountEntity) {
-        AccountMapper.update(AccountEntity);
+    public void update(AccountEntity accountEntity) {
+        accountMapper.update(accountEntity);
     }
 
     @Override
     public void delete(String code) {
-        AccountMapper.delete(code, true);
+        accountMapper.delete(code, true);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void transfer(String fromAccountCode, String toAccountCode, Double amount) {
+        List<AccountEntity> accountEntities =
+                accountMapper.selectByCodes(Lists.newArrayList(fromAccountCode, toAccountCode));
+        if (accountEntities == null || accountEntities.size() < 2) {
+            throw BusinessException.of(GoalsErrorEnum.ACCOUNT_NOT_FOUND);
+        }
+        AccountEntity fromEntity = accountEntities.get(0);
+        if (fromEntity.getInventory() < amount) {
+            throw BusinessException.of(GoalsErrorEnum.INVENTORY_NOT_ENOUGH);
+        }
+        AccountEntity toEntity = accountEntities.get(1);
+        fromEntity.setInventory(fromEntity.getInventory() - amount);
+        toEntity.setInventory(toEntity.getInventory() + amount);
+        accountMapper.update(fromEntity);
+        accountMapper.update(toEntity);
     }
 
     @Override
     public AccountEntity findOne(String code) {
-        return AccountMapper.selectByCode(code);
+        return accountMapper.selectByCode(code);
     }
 
     @Override
     public List<AccountEntity> listByCodes(final List<String> codes) {
-        final List<AccountEntity> result = Lists.newArrayList();
-        if (CollectionUtil.isEmpty(codes)) {
-            return result;
+        final List<String> codeList = StringUtil.dropBlank(codes);
+        if (codeList.isEmpty()) {
+            return Lists.newArrayList();
         }
-        return Optional.of(AccountMapper.selectByCodes(codes))
+        return Optional.of(accountMapper.selectByCodes(codeList))
                 .filter(CollectionUtil::isNotEmpty)
-                .map(entities -> entities.stream()
-                        .collect(Collectors.toMap(AbstractUnified::getCode, Function.identity())))
-                .map(map -> {
-                    codes.forEach(c -> Optional.of(map.get(c)).ifPresent(result::add));
-                    return result;
-                }).orElse(result);
+                .map(list -> list.stream().sorted(Comparator.comparingInt(a -> codeList.indexOf(a.getCode())))
+                        .collect(Collectors.toList()))
+                .orElseGet(Lists::newArrayList);
     }
 
     @Override
     @Transactional(readOnly = true)
     public QuerySection<AccountEntity> page(AccountCriteria criteria, PageRequest pageRequest) {
-        List<AccountEntity> moduleEntities = AccountMapper.selectByPage(criteria, pageRequest);
-        long count = AccountMapper.countByQuery(criteria);
+        List<AccountEntity> moduleEntities = accountMapper.selectByPage(criteria, pageRequest);
+        long count = accountMapper.countByQuery(criteria);
         return QuerySection.of(moduleEntities).total(count);
     }
 }

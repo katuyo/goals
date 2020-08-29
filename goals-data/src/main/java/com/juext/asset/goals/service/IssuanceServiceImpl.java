@@ -2,8 +2,8 @@ package com.juext.asset.goals.service;
 
 import com.google.common.collect.Lists;
 import com.juext.asset.goals.entity.IssuanceEntity;
+import com.juext.asset.goals.mapper.IssuanceMapper;
 import com.juext.asset.goals.query.IssuanceCriteria;
-import org.featx.spec.entity.AbstractUnified;
 import org.featx.spec.feature.IdGenerate;
 import org.featx.spec.model.PageRequest;
 import org.featx.spec.model.QuerySection;
@@ -13,10 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.juext.asset.goals.Constant.CODE_PREFIX_ISSUANCE;
+import static com.juext.asset.goals.Constant.DEFAULT_RADIX;
 
 /**
  * @author Excepts
@@ -26,58 +29,57 @@ import java.util.stream.Collectors;
 public class IssuanceServiceImpl implements IssuanceService {
 
     @Resource
-    private com.juext.asset.goals.mapper.IssuanceMapper IssuanceMapper;
+    private IssuanceMapper issuancemapper;
 
     @Resource
     private IdGenerate idGenerate;
+
     @Override
     @Transactional
-    public void save(IssuanceEntity IssuanceEntity) {
-        if (StringUtil.isBlank(IssuanceEntity.getCode())) {
-            IssuanceEntity.setCode(String.format("%s%s", "DFM", Long.toString(idGenerate.nextId(), 36)));
-            IssuanceMapper.insert(IssuanceEntity);
+    public void save(IssuanceEntity issuanceEntity) {
+        if (StringUtil.isBlank(issuanceEntity.getCode())) {
+            issuanceEntity.setCode(String.format("%s%s", CODE_PREFIX_ISSUANCE,
+                    Long.toString(idGenerate.nextId(), DEFAULT_RADIX)));
+            issuancemapper.insert(issuanceEntity);
         } else {
-            IssuanceMapper.upsert(IssuanceEntity);
+            issuancemapper.upsert(issuanceEntity);
         }
     }
 
     @Override
     @Transactional
-    public void update(IssuanceEntity IssuanceEntity) {
-        IssuanceMapper.update(IssuanceEntity);
+    public void update(IssuanceEntity issuanceEntity) {
+        issuancemapper.update(issuanceEntity);
     }
 
     @Override
     public void delete(String code) {
-        IssuanceMapper.delete(code, true);
+        issuancemapper.delete(code, true);
     }
 
     @Override
     public IssuanceEntity findOne(String code) {
-        return IssuanceMapper.selectByCode(code);
+        return issuancemapper.selectByCode(code);
     }
 
     @Override
     public List<IssuanceEntity> listByCodes(final List<String> codes) {
-        final List<IssuanceEntity> result = Lists.newArrayList();
-        if (CollectionUtil.isEmpty(codes)) {
-            return result;
+        final List<String> codeList = StringUtil.dropBlank(codes);
+        if (codeList.isEmpty()) {
+            return Lists.newArrayList();
         }
-        return Optional.of(IssuanceMapper.selectByCodes(codes))
+        return Optional.of(issuancemapper.selectByCodes(codeList))
                 .filter(CollectionUtil::isNotEmpty)
-                .map(entities -> entities.stream()
-                        .collect(Collectors.toMap(AbstractUnified::getCode, Function.identity())))
-                .map(map -> {
-                    codes.forEach(c -> Optional.of(map.get(c)).ifPresent(result::add));
-                    return result;
-                }).orElse(result);
+                .map(list -> list.stream().sorted(Comparator.comparingInt(a -> codeList.indexOf(a.getCode())))
+                        .collect(Collectors.toList()))
+                .orElseGet(Lists::newArrayList);
     }
 
     @Override
     @Transactional(readOnly = true)
     public QuerySection<IssuanceEntity> page(IssuanceCriteria criteria, PageRequest pageRequest) {
-        List<IssuanceEntity> moduleEntities = IssuanceMapper.selectByPage(criteria, pageRequest);
-        long count = IssuanceMapper.countByQuery(criteria);
+        List<IssuanceEntity> moduleEntities = issuancemapper.selectByPage(criteria, pageRequest);
+        long count = issuancemapper.countByQuery(criteria);
         return QuerySection.of(moduleEntities).total(count);
     }
 }

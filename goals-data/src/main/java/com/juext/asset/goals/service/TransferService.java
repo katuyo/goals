@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface TransferService {
 
-    void save(TransferEntity TransferEntity);
+    void save(TransferEntity transferEntity);
 
     void delete(String code);
 
