@@ -38,9 +38,4 @@ public class DataSourceConfiguration {
     public IdGenerate idGenerator() {
         return new SnowflakeIdWorker(epoch, dateCenterId, machineId);
     }
-
-//    @Bean
-//    public SqlSessionFactory sqlSessionFactory() {
-//        SqlSessionFactoryBean()
-//    }
 }

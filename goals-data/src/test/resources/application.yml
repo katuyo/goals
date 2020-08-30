@@ -2,11 +2,17 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:goals;mode=MySql;DB_CLOSE_DELAY=-1
+    name: goals
     username: sa
     password:
     schema: classpath:db/schema.sql
     data: classpath:db/data.sql
     jdbc-url: ${spring.datasource.url}
+  r2dbc:
+    url: ${spring.datasource.url}
+    name: ${spring.datasource.name}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
 
 mybatis:
   configuration:

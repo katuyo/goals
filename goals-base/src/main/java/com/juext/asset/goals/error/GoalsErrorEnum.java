@@ -11,6 +11,7 @@ import org.featx.spec.enums.BaseEnum;
 public enum GoalsErrorEnum implements BaseEnum {
     ACCOUNT_NOT_FOUND(40410001, "Account not found"),
     INVENTORY_NOT_ENOUGH(40010001, "Inventory not afford"),
+    TRANSFER_AMOUNT_NEGATIVE(40010002, "Transfer Negative"),
     ;
     @Getter
     private final int code;

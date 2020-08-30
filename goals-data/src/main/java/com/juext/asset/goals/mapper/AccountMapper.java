@@ -29,13 +29,15 @@ public interface AccountMapper {
             statement = "select t.id from t_account t where t.code=#{entity.code}")
     int insert(@Param("entity") AccountEntity accountEntity);
 
-    @Update({"<script>update t_account <set> inventory = #{entity.inventory},",
-            " comment = #{entity.comment}, ",
+    @Update({"<script>update t_account <set> name = #{entity.name}, type = #{entity.type},",
+            "inventory = #{entity.inventory}, comment = #{entity.comment},",
             "</set> where code = #{entity.code} and deleted = 0</script>"})
     int upsert(@Param("entity") AccountEntity accountEntity);
 
     @Update({"<script>update t_account <set> ",
-            "<if test=\"entity.status != null\"> status = #{entity.status},</if>",
+            "<if test=\"entity.name != null\"> name = #{entity.name},</if>",
+            "<if test=\"entity.type != null\"> type = #{entity.type},</if>",
+            "<if test=\"entity.inventory != null\"> inventory = #{entity.inventory},</if>",
             "<if test=\"entity.comment != null and entity.comment != ''\"> comment = #{entity.comment},</if>",
             "</set> where code = #{entity.code} and deleted = 0",
             "</script> "})

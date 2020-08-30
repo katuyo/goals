@@ -1,6 +1,7 @@
 package com.juext.asset.goals.service;
 
 import com.juext.asset.goals.entity.AccountEntity;
+import com.juext.asset.goals.param.AccountTransferParam;
 import com.juext.asset.goals.query.AccountCriteria;
 import org.featx.spec.model.PageRequest;
 import org.featx.spec.model.QuerySection;
@@ -19,7 +20,7 @@ public interface AccountService {
 
     void delete(String code);
 
-    void transfer(String fromAccountCode, String toAccountCode, Double amount);
+    void transfer(AccountTransferParam transferParam);
 
     AccountEntity findOne(String code);
 

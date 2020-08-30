@@ -1,24 +1,23 @@
 package com.juext.asset.goals.mapper;
 
+import com.google.common.collect.Lists;
 import com.juext.asset.goals.SpringDataTestSuit;
 import com.juext.asset.goals.entity.AccountEntity;
 import com.juext.asset.goals.query.AccountCriteria;
-import com.google.common.collect.Lists;
 import org.featx.spec.model.PageRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Cartoon Zhang
@@ -60,6 +59,9 @@ class AccountMapperTest extends SpringDataTestSuit {
         AccountEntity foundAccount = accountMapper.selectByCode(code);
         assertNotEquals(accountEntity.getInventory(), foundAccount.getInventory());
         assertNotEquals(accountEntity.getComment(), foundAccount.getComment());
+        assertThrows(DataIntegrityViolationException.class, () -> accountMapper.upsert(accountEntity));
+        accountEntity.setName("");
+        accountEntity.setType(1);
         assertEquals(1, accountMapper.upsert(accountEntity));
 
         foundAccount = accountMapper.selectByCode(code);
@@ -79,7 +81,7 @@ class AccountMapperTest extends SpringDataTestSuit {
         assertNotEquals(accountEntity.getInventory(), foundAccount.getInventory());
         assertNotEquals(accountEntity.getComment(), foundAccount.getComment());
 
-        assertEquals(1, accountMapper.upsert(accountEntity));
+        assertEquals(1, accountMapper.update(accountEntity));
 
         foundAccount = accountMapper.selectByCode(code);
         assertEquals(accountEntity.getInventory(), foundAccount.getInventory());

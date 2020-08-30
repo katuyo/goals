@@ -28,8 +28,4 @@ allprojects {
             }
         }
     }
-
-    test {
-        useJUnitPlatform()
-    }
 }

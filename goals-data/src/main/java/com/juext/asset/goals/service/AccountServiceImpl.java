@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.juext.asset.goals.entity.AccountEntity;
 import com.juext.asset.goals.error.GoalsErrorEnum;
 import com.juext.asset.goals.mapper.AccountMapper;
+import com.juext.asset.goals.param.AccountTransferParam;
 import com.juext.asset.goals.query.AccountCriteria;
+import org.featx.spec.enums.BusinessError;
 import org.featx.spec.error.BusinessException;
 import org.featx.spec.feature.IdGenerate;
 import org.featx.spec.model.PageRequest;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 
 import static com.juext.asset.goals.Constant.CODE_PREFIX_ACCOUNT;
 import static com.juext.asset.goals.Constant.DEFAULT_RADIX;
+import static com.juext.asset.goals.error.GoalsErrorEnum.TRANSFER_AMOUNT_NEGATIVE;
+import static org.featx.spec.util.OptionalUtil.nullTrue;
 
 /**
  * @author Excepts
@@ -59,21 +63,34 @@ public class AccountServiceImpl implements AccountService {
         accountMapper.delete(code, true);
     }
 
-    @Override
-    @Transactional(rollbackFor = RuntimeException.class)
-    public void transfer(String fromAccountCode, String toAccountCode, Double amount) {
-        List<AccountEntity> accountEntities =
-                accountMapper.selectByCodes(Lists.newArrayList(fromAccountCode, toAccountCode));
-        if (accountEntities == null || accountEntities.size() < 2) {
+    private List<AccountEntity> checkAccountTransferParam(AccountTransferParam param) {
+        if (StringUtil.isAnyBlank(param.getFromAccountCode(), param.getToAccountCode())) {
+            throw BusinessException.of(BusinessError.PARAMETER_LOST, "From/To account code for transfer");
+        }
+        if (nullTrue(param.getAmount(), amount -> amount <= 0.0)) {
+            throw BusinessException.of(TRANSFER_AMOUNT_NEGATIVE);
+        }
+        List<String> codes = param.accountCodes();
+        List<AccountEntity> accountEntities = accountMapper.selectByCodes(codes);
+        if (nullTrue(accountEntities, list -> list.size() < 2)) {
             throw BusinessException.of(GoalsErrorEnum.ACCOUNT_NOT_FOUND);
         }
+        return accountEntities.stream()
+                .sorted(Comparator.comparingInt(a -> codes.indexOf(a.getCode())))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void transfer(AccountTransferParam transferParam) {
+        List<AccountEntity> accountEntities = checkAccountTransferParam(transferParam);
         AccountEntity fromEntity = accountEntities.get(0);
-        if (fromEntity.getInventory() < amount) {
+        if (fromEntity.getInventory() < transferParam.getAmount()) {
             throw BusinessException.of(GoalsErrorEnum.INVENTORY_NOT_ENOUGH);
         }
         AccountEntity toEntity = accountEntities.get(1);
-        fromEntity.setInventory(fromEntity.getInventory() - amount);
-        toEntity.setInventory(toEntity.getInventory() + amount);
+        fromEntity.setInventory(fromEntity.getInventory() - transferParam.getAmount());
+        toEntity.setInventory(toEntity.getInventory() + transferParam.getAmount());
         accountMapper.update(fromEntity);
         accountMapper.update(toEntity);
     }

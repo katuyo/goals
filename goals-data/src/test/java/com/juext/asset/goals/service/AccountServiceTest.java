@@ -3,6 +3,7 @@ package com.juext.asset.goals.service;
 import com.google.common.collect.Lists;
 import com.juext.asset.goals.entity.AccountEntity;
 import com.juext.asset.goals.mapper.AccountMapper;
+import com.juext.asset.goals.param.AccountTransferParam;
 import com.juext.asset.goals.query.AccountCriteria;
 import org.featx.spec.error.BusinessException;
 import org.featx.spec.feature.IdGenerate;
@@ -24,7 +25,8 @@ import java.util.stream.Collectors;
 
 import static com.juext.asset.goals.Constant.CODE_PREFIX_ACCOUNT;
 import static com.juext.asset.goals.Constant.DEFAULT_RADIX;
-import static com.juext.asset.goals.error.GoalsErrorEnum.ACCOUNT_NOT_FOUND;
+import static com.juext.asset.goals.error.GoalsErrorEnum.*;
+import static org.featx.spec.enums.BusinessError.PARAMETER_LOST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -81,22 +83,50 @@ public class AccountServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"a,b,1.3"})
+    @ValueSource(strings = {"a,b,1.3", " , , ", "a, , ", " ,b, ", "a,b, ",
+            "a,b,-13.05", "a,b,0.0", "a,b,11.06", "a,b,21.334"})
     void testTransfer(String code) {
         String[] params = code.split(",");
         String fromCode = params[0];
         String toCode = params[1];
-        Double amount = Double.parseDouble(params[2]);
+        double amount = Double.parseDouble(StringUtil.isBlank(params[2]) ? "0" : params[2]);
+        final AccountTransferParam param = AccountTransferParam.newInstance()
+                .fromAccountCode(fromCode).toAccountCode(toCode).amount(amount);
+
+        if (StringUtil.isAnyBlank(fromCode, toCode)) {
+            assertThrows(BusinessException.class, () -> accountService.transfer(param), PARAMETER_LOST.getMessage());
+            return;
+        } else if (amount <= 0.0) {
+            assertThrows(BusinessException.class, () -> accountService.transfer(param), TRANSFER_AMOUNT_NEGATIVE.getMessage());
+            return;
+        }
 
         when(accountMapper.selectByCodes(Lists.newArrayList(fromCode, toCode)))
-                .thenReturn(Lists.newArrayList());
+                .thenReturn(null);
         assertThrows(BusinessException.class, () ->
-                accountService.transfer(fromCode, toCode, amount), ACCOUNT_NOT_FOUND.getMessage());
+                accountService.transfer(param), ACCOUNT_NOT_FOUND.getMessage());
         verify(accountMapper).selectByCodes(Lists.newArrayList(fromCode, toCode));
         clearInvocations(accountMapper);
 
-//        when(accountMapper.selectByCodes(Lists.newArrayList(fromCode, toCode)))
-//            .thenReturn();
+        AccountEntity fromAccount = new AccountEntity();
+        fromAccount.setCode(fromCode);
+        fromAccount.setInventory(12.3456);
+        AccountEntity toAccount = new AccountEntity();
+        toAccount.setCode(toCode);
+        toAccount.setInventory(0.8);
+        when(accountMapper.selectByCodes(Lists.newArrayList(fromCode, toCode)))
+                .thenReturn(Lists.newArrayList(fromAccount, toAccount));
+        if (amount > fromAccount.getInventory()) {
+            assertThrows(BusinessException.class, () -> accountService.transfer(param), INVENTORY_NOT_ENOUGH.getMessage());
+            verify(accountMapper).selectByCodes(Lists.newArrayList(fromCode, toCode));
+        } else {
+            when(accountMapper.update(isA(AccountEntity.class))).thenReturn(1);
+            accountService.transfer(param);
+            verify(accountMapper).selectByCodes(Lists.newArrayList(fromCode, toCode));
+            verify(accountMapper).update(fromAccount);
+            verify(accountMapper).update(toAccount);
+        }
+        clearInvocations(accountMapper);
     }
 
     @ParameterizedTest
