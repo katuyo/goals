@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version("${kotlinVersion}")
     id("org.jetbrains.kotlin.plugin.spring") version("${kotlinVersion}")
     id("org.springframework.boot") version("${springBootVersion}")
-    id("io.spring.dependency-management") version("1.0.9.RELEASE")
+    id("io.spring.dependency-management") version("${springDepedencyVersion}")
     id("org.flywaydb.flyway") version("${flywayVersion}")
 }
 
@@ -11,12 +11,12 @@ dependencies {
     compile(project(":goals-base"))
     implementation("org.featx.spec:spec:${featxSpecVersion}")
     implementation("com.google.guava:guava:${guavaVersion}")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.0.2.RELEASE")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.3.5")
+//    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.0.2.RELEASE")
+//    implementation("org.jetbrains.kotlin:kotlin-reflect")
+//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.3.5")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:${springBootVersion}")
+//    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:${springBootVersion}")
 //    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch:${springBootVersion}")
 
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springMybatisVersion}")
@@ -34,11 +34,11 @@ dependencies {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_14
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_15
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_14
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_15
 }
 
 flyway {

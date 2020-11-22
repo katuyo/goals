@@ -1,10 +1,10 @@
 package com.juext.asset.goals.controller;
 
-import com.juext.asset.goals.spec.endpoint.TransferEndpoint;
-import com.juext.asset.goals.spec.model.TransferInfo;
-import com.juext.asset.goals.spec.model.TransferItem;
-import com.juext.asset.goals.spec.model.TransferPageQueryRequest;
-import com.juext.asset.goals.spec.model.TransferSaveRequest;
+import com.juext.asset.goals.endpoint.TransferEndpoint;
+import com.juext.asset.goals.model.TransferInfo;
+import com.juext.asset.goals.model.TransferItem;
+import com.juext.asset.goals.model.TransferPageQueryRequest;
+import com.juext.asset.goals.model.TransferSaveRequest;
 import org.featx.spec.model.*;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,10 +1,10 @@
 package com.juext.asset.goals.controller;
 
-import com.juext.asset.goals.spec.endpoint.IssuanceEndpoint;
-import com.juext.asset.goals.spec.model.IssuanceInfo;
-import com.juext.asset.goals.spec.model.IssuanceItem;
-import com.juext.asset.goals.spec.model.IssuancePageQueryRequest;
-import com.juext.asset.goals.spec.model.IssuanceSaveRequest;
+import com.juext.asset.goals.endpoint.IssuanceEndpoint;
+import com.juext.asset.goals.model.IssuanceInfo;
+import com.juext.asset.goals.model.IssuanceItem;
+import com.juext.asset.goals.model.IssuancePageQueryRequest;
+import com.juext.asset.goals.model.IssuanceSaveRequest;
 import org.featx.spec.model.*;
 import org.springframework.web.bind.annotation.RestController;
 

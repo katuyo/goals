@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version("${kotlinVersion}")
     id("org.jetbrains.kotlin.plugin.spring") version("${kotlinVersion}")
     id("org.springframework.boot") version("${springBootVersion}")
-    id("io.spring.dependency-management") version("1.0.9.RELEASE")
+    id("io.spring.dependency-management") version("${springDepedencyVersion}")
 }
 
 dependencyManagement {
@@ -24,7 +24,7 @@ configurations {
 
 dependencies {
     compile(project(":goals-spec"))
-    compile(project(":goals-core"))
+    compile(project(":goals-data"))
 //    compile("javax.servlet-api:${servletVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
@@ -32,18 +32,18 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
-    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
-    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel")
-
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+//    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
+//    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+//    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel")
+//
+//    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
 //    implementation("org.apache.rocketmq:rocketmq-spring-boot-starter:${springRocketMqVersion}")
-    implementation("com.alibaba.csp:sentinel-datasource-nacos")
+//    implementation("com.alibaba.csp:sentinel-datasource-nacos")
     implementation("com.google.guava:guava:${guavaVersion}")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -52,9 +52,9 @@ dependencies {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_14
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_15
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_14
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_15
 }

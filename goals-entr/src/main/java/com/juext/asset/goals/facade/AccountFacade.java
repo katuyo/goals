@@ -1,9 +1,9 @@
 package com.juext.asset.goals.facade;
 
-import com.juext.asset.goals.spec.model.AccountInfo;
-import com.juext.asset.goals.spec.model.AccountItem;
-import com.juext.asset.goals.spec.model.AccountPageQueryRequest;
-import com.juext.asset.goals.spec.model.AccountSaveRequest;
+import com.juext.asset.goals.model.AccountInfo;
+import com.juext.asset.goals.model.AccountItem;
+import com.juext.asset.goals.model.AccountPageQueryRequest;
+import com.juext.asset.goals.model.AccountSaveRequest;
 import org.featx.spec.model.Coded;
 import org.featx.spec.model.QuerySection;
 

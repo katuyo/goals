@@ -1,9 +1,10 @@
 rootProject.name = "goals"
 include("goals-base")
-include("goals-spec")
-include("goals-core")
-include("goals-data")
 
+include("goals-entr")
+
+include("goals-data")
+include("goals-spec")
 include("goals-http")
 //include("goals-mgsq")
 //include("goals-cron")

@@ -1,10 +1,10 @@
 package com.juext.asset.goals.controller;
 
-import com.juext.asset.goals.spec.endpoint.AccountEndpoint;
-import com.juext.asset.goals.spec.model.AccountInfo;
-import com.juext.asset.goals.spec.model.AccountItem;
-import com.juext.asset.goals.spec.model.AccountPageQueryRequest;
-import com.juext.asset.goals.spec.model.AccountSaveRequest;
+import com.juext.asset.goals.endpoint.AccountEndpoint;
+import com.juext.asset.goals.model.AccountInfo;
+import com.juext.asset.goals.model.AccountItem;
+import com.juext.asset.goals.model.AccountPageQueryRequest;
+import com.juext.asset.goals.model.AccountSaveRequest;
 import org.featx.spec.model.*;
 import org.springframework.web.bind.annotation.RestController;
 
