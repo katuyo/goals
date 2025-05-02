@@ -52,13 +52,6 @@ func indexes(s string, word string) []int {
 	return result
 }
 
-func sortQuick(nums []int) {
-	if len(nums) <= 1 {
-		return
-	}
-	quickSort(nums, 0, len(nums)-1)
-}
-
 func quickSort(v []int, s, e int) {
 	pivot := v[s]
 	p, i, j := s, s, e
@@ -86,6 +79,13 @@ func quickSort(v []int, s, e int) {
 	if e-p > 1 {
 		quickSort(v, p+1, e)
 	}
+}
+
+func sortQuick(nums []int) {
+	if len(nums) <= 1 {
+		return
+	}
+	quickSort(nums, 0, len(nums)-1)
 }
 
 func minStringUnit(s string) string {

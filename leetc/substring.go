@@ -2,51 +2,60 @@ package leetc
 
 func FindSubstring(s string, words []string) []int {
 	var result []int
-	if len(s) == 0 || len(words) == 0 {
+	var sl, wl, ws = len(s), len(words), 0
+	if sl == 0 || wl == 0 {
 		return result
 	}
-	var wl, l = len(words), 0
 
-	var wordsIndexes = make([][]int, wl)
+	var head *IndexInt
 	for i := 0; i < wl; i++ {
-		if l == 0 {
-			l = len(words[i])
+		if ws == 0 {
+			ws = len(words[i])
 		}
-		idxs := indexes(s, words[i])
-		wordsIndexes[i] = idxs
+		for _, v := range indexes(s, words[i]) {
+			var prev *IndexInt
+			var cur = head
+			if head == nil {
+				head = &IndexInt{Val: v, Index: i}
+				cur = head
+				continue
+			}
+			for cur != nil && v > cur.Val {
+				prev = cur
+				cur = cur.Next
+			}
+			if prev == nil {
+				head = &IndexInt{Val: v, Index: i, Next: cur}
+			} else {
+				prev.Next = &IndexInt{Val: v, Index: i, Next: cur}
+			}
+		}
 	}
 
-	var loops = make([]int, wl)
-	var temp = make([]int, wl)
+	for cur := head; cur != nil; cur = cur.Next {
+		var nextVal = cur.Val + ws
+		var notIndexes []int
+		notIndexes = append(notIndexes, cur.Index)
 
-	for all0 := false; !all0; {
-		var next = true
-		all0 = true
-		for wordIdx := 0; wordIdx < wl; wordIdx++ { //每个里找一个
-			temp[wordIdx] = wordsIndexes[wordIdx][loops[wordIdx]]
-			if next {
-				loops[wordIdx]++
-				next = false
-			}
-			if loops[wordIdx] >= len(wordsIndexes[wordIdx]) {
-				loops[wordIdx] = 0
-				next = true
-			}
-			if loops[wordIdx] != 0 {
-				all0 = false
-			}
+		if len(notIndexes) == wl {
+			result = append(result, cur.Val)
+			continue
 		}
-		sortQuick(temp)
-		pass := true
-		for i := 1; i < wl; i++ {
-			if temp[i]-temp[i-1] != l {
-				pass = false
+
+		for cursor := cur.Next; cursor != nil; cursor = cursor.Next {
+			if nextVal != cursor.Val || isInArray(cursor.Index, notIndexes) {
+				continue
+			}
+			nextVal += ws
+			notIndexes = append(notIndexes, cursor.Index)
+			if len(notIndexes) == wl {
+				if !isInArray(cur.Val, result) {
+					result = append(result, cur.Val)
+				}
 				break
 			}
 		}
-		if pass && !isInArray(temp[0], result) {
-			result = append(result, temp[0])
-		}
 	}
+
 	return result
 }
