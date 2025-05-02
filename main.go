@@ -21,6 +21,6 @@ func main() {
 
 	//fmt.Println(leetc.minStringUnit("abcabcabc"))
 
-	fmt.Println(leetc.FindSubstring("ababaab", []string{"ab", "ba", "ba"}))
+	fmt.Println(leetc.FindSubstring("bcabbcaabbccacacbabccacaababcbb", []string{"c", "b", "a", "c", "a", "a", "a", "b", "c"}))
 
 }

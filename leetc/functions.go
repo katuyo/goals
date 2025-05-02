@@ -1,5 +1,18 @@
 package leetc
 
+func contains(s string, word string) bool {
+	return index(s, word) != -1
+}
+
+func isInArray(num int, nums []int) bool {
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == num {
+			return true
+		}
+	}
+	return false
+}
+
 func index(s string, word string) int {
 	if len(s) == 0 || len(word) == 0 {
 		return -1
@@ -8,8 +21,8 @@ func index(s string, word string) int {
 	for i := 0; i < sl; i++ {
 		if s[i] == word[0] {
 			var pass = true
-			for j := 0; j < len(word) && i+j < sl; j++ {
-				if s[i+j] != word[j] {
+			for j := 0; j < len(word); j++ {
+				if i+j >= sl || s[i+j] != word[j] {
 					pass = false
 					break
 				}
@@ -25,13 +38,16 @@ func index(s string, word string) int {
 func indexes(s string, word string) []int {
 	wl := len(word)
 	var result []int
-	for len(s) >= wl {
+	var last = -1
+	for dropped := 0; len(s) >= wl; s, dropped = s[1:], dropped+1 {
 		i := index(s, word)
 		if i == -1 {
 			break
 		}
-		result = append(result, index(s, word))
-		s = s[1:]
+		if last != dropped+i {
+			result = append(result, dropped+i)
+			last = dropped + i
+		}
 	}
 	return result
 }
